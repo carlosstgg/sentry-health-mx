@@ -2,7 +2,7 @@ name: CI — SentryHealth MX
 
 on:
   push:
-    branches: [ "main", "develop" ]
+    branches: [ "main", "develop", "demo/ci-error-lockfile" ]
   pull_request:
     branches: [ "main" ]
 
