@@ -31,3 +31,8 @@ Thumbs.db
 # Logs
 *.log
 npm-debug.log*
+
+# AI Skills / local tooling artifacts
+.claude/
+skills-lock.json
+
