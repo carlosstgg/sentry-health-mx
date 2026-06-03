@@ -1,0 +1,52 @@
+name: CI — SentryHealth MX
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20, 22]
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Instalar dependencias
+        working-directory: frontend
+        run: npm ci
+
+      - name: Linting (ESLint)
+        working-directory: frontend
+        run: npm run lint
+
+      - name: Pruebas unitarias (Jest)
+        working-directory: frontend
+        run: npm test
+
+      - name: Build de producción (Next.js)
+        working-directory: frontend
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+
+      - name: Subir artefacto del build
+        uses: actions/upload-artifact@v4
+        with:
+          name: nextjs-build-node${{ matrix.node-version }}
+          path: frontend/.next/
+          retention-days: 7
