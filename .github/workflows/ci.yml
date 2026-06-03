@@ -36,6 +36,9 @@ jobs:
       - name: Pruebas unitarias (Jest)
         working-directory: frontend
         run: npm test
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
       - name: Build de producción (Next.js)
         working-directory: frontend
@@ -50,3 +53,28 @@ jobs:
           name: nextjs-build-node${{ matrix.node-version }}
           path: frontend/.next/
           retention-days: 7
+
+  deploy-vercel:
+    name: Deploy automático a Vercel (solo main)
+    needs: build-and-test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Instalar Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Desplegar a producción en Vercel
+        working-directory: frontend
+        run: vercel deploy --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
