@@ -36,3 +36,6 @@ npm-debug.log*
 .claude/
 skills-lock.json
 
+# Plan de trabajo interno (no se entrega)
+PLAN_P3.md
+
