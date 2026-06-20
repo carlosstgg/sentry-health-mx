@@ -44,8 +44,10 @@ function getSnapshot(): BiometricRecord[] {
   return cachedRecords;
 }
 
+const SERVER_SNAPSHOT: BiometricRecord[] = [];
+
 function getServerSnapshot(): BiometricRecord[] {
-  return [];
+  return SERVER_SNAPSHOT;
 }
 
 function subscribe(callback: () => void): () => void {
