@@ -2,7 +2,6 @@ import type { BiometricRecord } from "@/types/biometric";
 
 interface BiometricHistoryProps {
   records: BiometricRecord[];
-  isLoading: boolean;
 }
 
 const dateFormatter = new Intl.DateTimeFormat("es-MX", {
@@ -10,7 +9,7 @@ const dateFormatter = new Intl.DateTimeFormat("es-MX", {
   timeStyle: "short",
 });
 
-export default function BiometricHistory({ records, isLoading }: BiometricHistoryProps) {
+export default function BiometricHistory({ records }: BiometricHistoryProps) {
   return (
     <section
       aria-labelledby="titulo-historial"
@@ -20,19 +19,13 @@ export default function BiometricHistory({ records, isLoading }: BiometricHistor
         Historial de registros
       </h2>
 
-      {isLoading && (
-        <p role="status" className="text-sm text-zinc-500 dark:text-zinc-400">
-          Cargando registros...
-        </p>
-      )}
-
-      {!isLoading && records.length === 0 && (
+      {records.length === 0 && (
         <p role="status" className="text-sm text-zinc-500 dark:text-zinc-400">
           Todavía no tienes registros. Usa el formulario para agregar tu primera lectura.
         </p>
       )}
 
-      {!isLoading && records.length > 0 && (
+      {records.length > 0 && (
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <caption className="sr-only">
