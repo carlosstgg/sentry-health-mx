@@ -1,8 +1,15 @@
 @import "tailwindcss";
 
 :root {
+  /* Fija el esquema claro: evita que el navegador (modo oscuro del SO o
+     auto-dark-mode) oscurezca el fondo blanco y rompa el contraste. */
+  color-scheme: light;
   --background: #ffffff;
   --foreground: #18181b;
+}
+
+html {
+  background: var(--background);
 }
 
 @theme inline {
