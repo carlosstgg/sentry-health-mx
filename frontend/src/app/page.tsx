@@ -2,10 +2,12 @@
 
 import BiometricForm from "@/components/BiometricForm";
 import BiometricHistory from "@/components/BiometricHistory";
+import CrisisGuidance from "@/components/CrisisGuidance";
 import { useBiometricRecords } from "@/hooks/useBiometricRecords";
 
 export default function Home() {
   const { records, addRecord } = useBiometricRecords();
+  const latestRecord = records[0] ?? null;
 
   return (
     <main
@@ -25,6 +27,8 @@ export default function Home() {
           Desarrollo Sostenible 3: Salud y Bienestar.
         </p>
       </div>
+
+      <CrisisGuidance latestRecord={latestRecord} />
 
       <div className="flex w-full flex-col items-center gap-8 lg:flex-row lg:items-start lg:justify-center">
         <BiometricForm onSubmit={addRecord} />
