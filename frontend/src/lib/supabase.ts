@@ -1,7 +1,9 @@
 import { createClient } from '@supabase/supabase-js'
+import type { Database } from '@/types/database'
 
 /**
- * Cliente de Supabase para el lado del navegador.
+ * Cliente de Supabase para el lado del navegador, tipado con el esquema
+ * generado en `@/types/database`.
  *
  * Las credenciales se leen de variables de entorno públicas
  * (NEXT_PUBLIC_*) y nunca se hardcodean en el código fuente.
@@ -18,4 +20,4 @@ if (!supabaseUrl || !supabaseAnonKey) {
   )
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey)

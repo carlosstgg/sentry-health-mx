@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/components/AuthProvider";
 
 /**
  * Encabezado fijo con la marca y un indicador de conexión.
@@ -9,6 +10,7 @@ import { useEffect, useState } from "react";
  * funcionar con internet inestable (regla 5 de .cursorrules).
  */
 export default function AppHeader() {
+  const { user, signOut } = useAuth();
   const [isOnline, setIsOnline] = useState(true);
 
   useEffect(() => {
@@ -38,19 +40,36 @@ export default function AppHeader() {
           </span>
         </Link>
 
-        <span
-          role="status"
-          aria-live="polite"
-          className="flex items-center gap-2 text-xs font-medium text-zinc-500"
-        >
+        <div className="flex items-center gap-4">
           <span
-            aria-hidden="true"
-            className={`h-2 w-2 rounded-full ${
-              isOnline ? "bg-green-500" : "bg-zinc-400"
-            }`}
-          />
-          {isOnline ? "En línea" : "Sin conexión"}
-        </span>
+            role="status"
+            aria-live="polite"
+            className="flex items-center gap-2 text-xs font-medium text-zinc-500"
+          >
+            <span
+              aria-hidden="true"
+              className={`h-2 w-2 rounded-full ${
+                isOnline ? "bg-green-500" : "bg-zinc-400"
+              }`}
+            />
+            {isOnline ? "En línea" : "Sin conexión"}
+          </span>
+
+          {user && (
+            <>
+              <span className="hidden max-w-[14rem] truncate text-sm text-zinc-600 sm:inline">
+                {user.email}
+              </span>
+              <button
+                type="button"
+                onClick={() => void signOut()}
+                className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-700 transition-colors duration-200 hover:bg-zinc-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600"
+              >
+                Cerrar sesión
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </header>
   );
