@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 import AppHeader from "@/components/AppHeader";
+import { AuthProvider } from "@/components/AuthProvider";
 import "./globals.css";
 
 const inter = Inter({
@@ -33,13 +34,15 @@ export default function RootLayout({
     >
       <body className="flex min-h-full flex-col bg-white text-zinc-900">
         <ServiceWorkerRegistration />
-        <AppHeader />
-        {children}
-        <footer className="border-t border-zinc-200 px-6 py-8">
-          <p className="mx-auto w-full max-w-5xl text-center text-sm text-zinc-500">
-            SentryHealth MX · Alineado con el ODS 3: Salud y Bienestar
-          </p>
-        </footer>
+        <AuthProvider>
+          <AppHeader />
+          {children}
+          <footer className="border-t border-zinc-200 px-6 py-8">
+            <p className="mx-auto w-full max-w-5xl text-center text-sm text-zinc-500">
+              SentryHealth MX · Alineado con el ODS 3: Salud y Bienestar
+            </p>
+          </footer>
+        </AuthProvider>
       </body>
     </html>
   );

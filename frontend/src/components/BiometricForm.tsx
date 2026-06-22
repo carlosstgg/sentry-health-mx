@@ -4,7 +4,7 @@ import { useState, type FormEvent } from "react";
 import type { NewBiometricRecord } from "@/types/biometric";
 
 interface BiometricFormProps {
-  onSubmit: (record: NewBiometricRecord) => void;
+  onSubmit: (record: NewBiometricRecord) => Promise<void>;
 }
 
 interface FormValues {
@@ -108,6 +108,8 @@ export default function BiometricForm({ onSubmit }: BiometricFormProps) {
   const [values, setValues] = useState<FormValues>(INITIAL_VALUES);
   const [errors, setErrors] = useState<FormErrors>({});
   const [confirmation, setConfirmation] = useState<string>("");
+  const [submitError, setSubmitError] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange =
     (field: keyof FormValues) =>
@@ -115,8 +117,9 @@ export default function BiometricForm({ onSubmit }: BiometricFormProps) {
       setValues((previous) => ({ ...previous, [field]: event.target.value }));
     };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setSubmitError("");
 
     const validationErrors = validate(values);
     setErrors(validationErrors);
@@ -126,16 +129,28 @@ export default function BiometricForm({ onSubmit }: BiometricFormProps) {
       return;
     }
 
-    onSubmit({
-      glucoseMgDl: Number(values.glucoseMgDl),
-      systolicBp: Number(values.systolicBp),
-      diastolicBp: Number(values.diastolicBp),
-      heartRate: Number(values.heartRate),
-      notes: values.notes.trim() || undefined,
-    });
+    setIsSubmitting(true);
+    try {
+      await onSubmit({
+        glucoseMgDl: Number(values.glucoseMgDl),
+        systolicBp: Number(values.systolicBp),
+        diastolicBp: Number(values.diastolicBp),
+        heartRate: Number(values.heartRate),
+        notes: values.notes.trim() || undefined,
+      });
 
-    setValues(INITIAL_VALUES);
-    setConfirmation("Tu registro se guardó correctamente.");
+      setValues(INITIAL_VALUES);
+      setConfirmation("Tu registro se guardó correctamente.");
+    } catch (caught) {
+      setConfirmation("");
+      setSubmitError(
+        caught instanceof Error
+          ? caught.message
+          : "No pudimos guardar tu registro. Intenta de nuevo.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -196,10 +211,17 @@ export default function BiometricForm({ onSubmit }: BiometricFormProps) {
 
       <button
         type="submit"
-        className="mt-1 inline-flex h-11 items-center justify-center rounded-xl bg-zinc-900 px-4 font-medium text-white transition-colors duration-200 hover:bg-zinc-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-900"
+        disabled={isSubmitting}
+        className="mt-1 inline-flex h-11 items-center justify-center rounded-xl bg-zinc-900 px-4 font-medium text-white transition-colors duration-200 hover:bg-zinc-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-900 disabled:cursor-not-allowed disabled:opacity-60"
       >
-        Guardar registro
+        {isSubmitting ? "Guardando…" : "Guardar registro"}
       </button>
+
+      {submitError && (
+        <p role="alert" className="text-sm font-medium text-red-600">
+          {submitError}
+        </p>
+      )}
 
       <p
         role="status"
