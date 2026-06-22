@@ -52,6 +52,7 @@ jobs:
         with:
           name: nextjs-build-node${{ matrix.node-version }}
           path: frontend/.next/
+          include-hidden-files: true
           retention-days: 7
 
   deploy-vercel:
