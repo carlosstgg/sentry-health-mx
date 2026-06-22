@@ -1,8 +1,9 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  // PWA será manejado via next-pwa en versión futura
-  // Por ahora configuramos los headers de seguridad
+  // El comportamiento offline-first se implementa con un service worker
+  // manual (public/sw.js) en vez de next-pwa, para no agregar una
+  // dependencia pesada (regla 3 de .cursorrules).
   async headers() {
     return [
       {
