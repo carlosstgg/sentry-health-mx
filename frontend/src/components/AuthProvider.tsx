@@ -49,6 +49,12 @@ function translateAuthError(message: string): string {
   if (normalized.includes("email not confirmed")) {
     return "Debes confirmar tu correo antes de iniciar sesión.";
   }
+  if (normalized.includes("rate limit")) {
+    return "Demasiados intentos en poco tiempo. Espera unos minutos e inténtalo de nuevo.";
+  }
+  if (normalized.includes("for security purposes")) {
+    return "Por seguridad, espera unos segundos antes de volver a intentarlo.";
+  }
   return "Ocurrió un problema. Intenta de nuevo en un momento.";
 }
 
