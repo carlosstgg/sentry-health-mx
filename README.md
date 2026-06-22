@@ -5,6 +5,10 @@
 PWA de monitoreo biométrico para pacientes con enfermedades crónicas en México.
 Alineado con el **ODS 3: Salud y Bienestar**.
 
+Ver [`ARCHITECTURE.md`](./ARCHITECTURE.md) para los contextos delimitados,
+la arquitectura híbrida (microservicio de orientación + monolito modular)
+y el contrato Serverless/FaaS definido para los reportes clínicos.
+
 ## Stack
 
 - **Frontend:** Next.js 14 + TypeScript
