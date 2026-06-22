@@ -25,12 +25,16 @@ sentry-health-mx/
 │   ├── src/
 │   │   ├── app/                # App Router de Next.js
 │   │   ├── components/
+│   │   │   ├── CrisisGuidance.tsx           # Módulo crítico de Orientación
+│   │   │   └── ServiceWorkerRegistration.tsx
 │   │   ├── hooks/
 │   │   ├── lib/
-│   │   │   └── supabase.ts     # Cliente de Supabase
+│   │   │   ├── supabase.ts     # Cliente de Supabase
+│   │   │   └── orientation.ts  # Reglas de triaje del módulo crítico
 │   │   └── types/
 │   ├── public/
-│   │   └── manifest.json       # PWA manifest
+│   │   ├── manifest.json       # PWA manifest
+│   │   └── sw.js                # Service worker offline-first
 │   ├── package.json
 │   ├── package-lock.json       # OBLIGATORIO — npm ci lo requiere
 │   ├── tsconfig.json
@@ -44,6 +48,7 @@ sentry-health-mx/
 │   └── workflows/
 │       └── ci.yml              # Pipeline CI — GitHub Actions
 ├── .cursorrules                # Reglas de gobernanza IA (ya definidas)
+├── ARCHITECTURE.md             # Contextos delimitados, arquitectura híbrida, contrato Serverless/FaaS
 ├── .gitignore
 └── README.md
 ```
@@ -218,12 +223,16 @@ import '@testing-library/jest-dom'
 
 ## 8. CONFIGURACIÓN PWA (next.config.ts)
 
+El comportamiento offline-first (regla 5 de `.cursorrules`) se
+implementa con un service worker manual en `frontend/public/sw.js`,
+registrado desde `ServiceWorkerRegistration.tsx` en el layout raíz —
+no se usa `next-pwa` para evitar una dependencia pesada (regla 3).
+`next.config.ts` solo configura los headers de seguridad:
+
 ```typescript
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  // PWA será manejado via next-pwa en versión futura
-  // Por ahora configuramos los headers de seguridad
   async headers() {
     return [
       {
