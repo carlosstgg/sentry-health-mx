@@ -1,15 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
+import AppHeader from "@/components/AppHeader";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
@@ -22,7 +18,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#003087",
+  themeColor: "#e11d48",
 };
 
 export default function RootLayout({
@@ -33,11 +29,17 @@ export default function RootLayout({
   return (
     <html
       lang="es-MX"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${inter.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="flex min-h-full flex-col bg-white text-zinc-900">
         <ServiceWorkerRegistration />
+        <AppHeader />
         {children}
+        <footer className="border-t border-zinc-200 px-6 py-8">
+          <p className="mx-auto w-full max-w-5xl text-center text-sm text-zinc-500">
+            SentryHealth MX · Alineado con el ODS 3: Salud y Bienestar
+          </p>
+        </footer>
       </body>
     </html>
   );
